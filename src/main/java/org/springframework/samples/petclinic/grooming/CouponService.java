@@ -29,8 +29,11 @@ public class CouponService {
         List<Coupon> allCoupons= cr.findAll();
         return allCoupons;
     }    
-
+    @Transactional(rollbackFor = UnfeasibleCouponException.class)
     public void addVisit(Coupon c, Visit v) throws UnfeasibleCouponException {
-        // TODO: Change this
+        if(v.getDatetime().toLocalDate().isAfter(c.getExpiryDate()) || v.getDatetime().toLocalDate().isBefore(c.getStartDate())){
+            throw new UnfeasibleCouponException();
+        }
+        
     }
 }
